@@ -1,0 +1,160 @@
+/* =========================================================
+   Nível v2 — tokens.css  (identidade premium, dark-first)
+   Uso: <link rel="stylesheet" href="../identidade/tokens.css">
+   Fonte: Inter (OFL) em fonts/ ; fallback system-ui.
+   Ícones: Lucide (ISC) via icons.svg -> <svg class="ic"><use href="…/icons.svg#i-home"/></svg>
+   ========================================================= */
+@font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/Inter-Regular.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-weight:500;font-style:normal;font-display:swap;src:url("fonts/Inter-Medium.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url("fonts/Inter-SemiBold.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-weight:700;font-style:normal;font-display:swap;src:url("fonts/Inter-Bold.woff2") format("woff2")}
+
+:root{
+  /* Fundos e superfícies */
+  --nv-bg:#06070A; --nv-bg-2:#0B1020;
+  --nv-surface:#11172A; --nv-surface-2:#161D33; --nv-surface-3:#1D2542;
+  --nv-border:rgba(255,255,255,.10); --nv-border-strong:rgba(255,255,255,.18); --nv-border-soft:rgba(255,255,255,.07);
+  /* Texto (razão de contraste sobre #06070A / #11172A) */
+  --nv-text:#F4F6FB;      /* 18.6 / 16.5 */
+  --nv-text-2:#A8B0C5;    /* 9.3 / 8.2  */
+  --nv-text-3:#8791AB;    /* 6.4 / 5.7  (apoio; ainda AA) */
+  --nv-on-accent:#06070A; /* 10.8 sobre accent */
+  /* Destaque único */
+  --nv-accent:#2DD4BF; --nv-accent-hover:#5EEAD4; --nv-accent-press:#14B8A6;
+  --nv-accent-soft:rgba(45,212,191,.12); --nv-accent-line:rgba(45,212,191,.35);
+  --nv-indigo:#6366F1; /* só em gradientes sutis */
+  /* Semânticas (texto/ícone) e fundos suaves */
+  --nv-ok:#4ADE80;   --nv-ok-bg:rgba(74,222,128,.12);   --nv-ok-line:rgba(74,222,128,.30);
+  --nv-warn:#FBBF24; --nv-warn-bg:rgba(251,191,36,.12); --nv-warn-line:rgba(251,191,36,.30);
+  --nv-err:#F87171;  --nv-err-bg:rgba(248,113,113,.12); --nv-err-line:rgba(248,113,113,.32);
+  --nv-info:#818CF8; --nv-info-bg:rgba(129,140,248,.14);--nv-info-line:rgba(129,140,248,.32);
+  /* Gradientes */
+  --nv-grad-hero:radial-gradient(60% 50% at 80% 0%,rgba(99,102,241,.22),transparent 70%),radial-gradient(50% 40% at 10% 10%,rgba(45,212,191,.14),transparent 70%);
+  --nv-grad-card:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));
+
+  /* Tipografia */
+  --nv-font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --nv-fs-12:.75rem; --nv-fs-14:.875rem; --nv-fs-16:1rem; --nv-fs-20:1.25rem; --nv-fs-28:1.75rem; --nv-fs-40:2.5rem; --nv-fs-56:3.5rem;
+  --nv-lh-tight:1.1; --nv-lh-title:1.25; --nv-lh-body:1.55;
+  --nv-track-display:-.03em; --nv-track-title:-.02em; --nv-track-label:.06em;
+
+  /* Espaço (grid 8px) */
+  --nv-s-1:4px; --nv-s-2:8px; --nv-s-3:12px; --nv-s-4:16px; --nv-s-5:24px; --nv-s-6:32px; --nv-s-7:48px; --nv-s-8:64px; --nv-s-9:96px;
+  /* Raios */
+  --nv-r-sm:8px; --nv-r-md:12px; --nv-r-lg:16px; --nv-r-xl:20px; --nv-r-pill:999px;
+  /* Sombras */
+  --nv-sh-1:0 1px 2px rgba(0,0,0,.4);
+  --nv-sh-2:0 8px 24px rgba(0,0,0,.35);
+  --nv-sh-3:0 24px 64px rgba(0,0,0,.5);
+  --nv-glow:0 0 0 1px var(--nv-accent-line),0 8px 32px rgba(45,212,191,.18);
+  --nv-focus:0 0 0 2px var(--nv-bg),0 0 0 4px var(--nv-accent);
+  /* Movimento */
+  --nv-dur-1:120ms; --nv-dur-2:200ms; --nv-dur-3:360ms; --nv-dur-4:600ms;
+  --nv-ease:cubic-bezier(.2,.7,.2,1);
+  /* Layout */
+  --nv-tap:48px; --nv-app-w:420px;
+}
+@media (prefers-reduced-motion:reduce){:root{--nv-dur-1:0ms;--nv-dur-2:0ms;--nv-dur-3:0ms;--nv-dur-4:0ms}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+/* Alto contraste (opção do app: body.hc) */
+body.hc{--nv-bg:#000;--nv-surface:#0A0A0A;--nv-surface-2:#141414;--nv-border:rgba(255,255,255,.55);--nv-text-2:#fff;--nv-text-3:#E5E7EB}
+
+/* Base */
+.nv,.nv *{box-sizing:border-box}
+.nv{font-family:var(--nv-font);font-size:var(--nv-fs-16);line-height:var(--nv-lh-body);color:var(--nv-text);background:var(--nv-bg);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+.nv-bg-hero{background:var(--nv-grad-hero),var(--nv-bg)}
+
+/* Tipografia */
+.nv-display{font-size:clamp(2.5rem,6vw,3.5rem);line-height:var(--nv-lh-tight);font-weight:700;letter-spacing:var(--nv-track-display)}
+.nv-h1{font-size:var(--nv-fs-40);line-height:1.15;font-weight:700;letter-spacing:var(--nv-track-display);margin:0}
+.nv-h2{font-size:var(--nv-fs-28);line-height:var(--nv-lh-title);font-weight:600;letter-spacing:var(--nv-track-title);margin:0}
+.nv-h3{font-size:var(--nv-fs-20);line-height:var(--nv-lh-title);font-weight:600;letter-spacing:var(--nv-track-title);margin:0}
+.nv-body{font-size:var(--nv-fs-16);font-weight:400}
+.nv-small{font-size:var(--nv-fs-14);color:var(--nv-text-2)}
+.nv-eyebrow{font-size:var(--nv-fs-12);font-weight:600;letter-spacing:var(--nv-track-label);text-transform:uppercase;color:var(--nv-accent)}
+.nv-muted{color:var(--nv-text-2)}
+
+/* Ícones */
+.ic{width:24px;height:24px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:20px;height:20px}.ic-lg{width:32px;height:32px}
+.nv-icobox{width:40px;height:40px;border-radius:var(--nv-r-md);display:grid;place-items:center;background:var(--nv-surface-2);border:1px solid var(--nv-border);color:var(--nv-accent)}
+
+/* Botões */
+.nv-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--nv-s-2);min-height:var(--nv-tap);padding:0 var(--nv-s-5);border-radius:var(--nv-r-md);border:1px solid transparent;font:600 var(--nv-fs-16)/1 var(--nv-font);letter-spacing:-.01em;cursor:pointer;text-decoration:none;transition:background var(--nv-dur-2) var(--nv-ease),border-color var(--nv-dur-2) var(--nv-ease),transform var(--nv-dur-1) var(--nv-ease),box-shadow var(--nv-dur-2) var(--nv-ease)}
+.nv-btn:focus-visible,.nv-input:focus-visible,.nv-link:focus-visible,.nv-nav a:focus-visible,.nv-chip-btn:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.nv-btn:active{transform:scale(.985)}
+.nv-btn-primary{background:var(--nv-accent);color:var(--nv-on-accent)}
+.nv-btn-primary:hover{background:var(--nv-accent-hover);box-shadow:var(--nv-glow)}
+.nv-btn-primary:active{background:var(--nv-accent-press)}
+.nv-btn-secondary{background:transparent;color:var(--nv-text);border-color:var(--nv-border-strong)}
+.nv-btn-secondary:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.3)}
+.nv-btn-tertiary{background:transparent;color:var(--nv-accent);padding:0 var(--nv-s-2);min-height:40px}
+.nv-btn-tertiary::after{content:"→";transition:transform var(--nv-dur-2) var(--nv-ease)}
+.nv-btn-tertiary:hover::after{transform:translateX(4px)}
+.nv-btn-block{width:100%}
+.nv-btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.nv-link{color:var(--nv-accent);text-decoration:none;border-radius:4px}.nv-link:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* Inputs */
+.nv-field{display:grid;gap:var(--nv-s-2)}
+.nv-label{font-size:var(--nv-fs-14);font-weight:500;color:var(--nv-text-2)}
+.nv-input{width:100%;min-height:var(--nv-tap);padding:0 var(--nv-s-4);border-radius:var(--nv-r-md);background:var(--nv-surface);border:1px solid var(--nv-border-strong);color:var(--nv-text);font:400 var(--nv-fs-16) var(--nv-font);transition:border-color var(--nv-dur-2) var(--nv-ease)}
+.nv-input::placeholder{color:var(--nv-text-3)}
+.nv-input:hover{border-color:rgba(255,255,255,.3)}
+.nv-input:focus{border-color:var(--nv-accent)}
+.nv-input[aria-invalid="true"]{border-color:var(--nv-err)}
+.nv-help{font-size:var(--nv-fs-14);color:var(--nv-text-2)}
+.nv-help.err{color:var(--nv-err)}
+
+/* Cards */
+.nv-card{background:var(--nv-grad-card),var(--nv-surface);border:1px solid var(--nv-border);border-radius:var(--nv-r-lg);padding:var(--nv-s-5);box-shadow:var(--nv-sh-1)}
+.nv-card-lg{border-radius:var(--nv-r-xl);padding:var(--nv-s-6)}
+.nv-card-hi{border-color:var(--nv-accent-line);box-shadow:var(--nv-glow)}
+.nv-card-title{font-size:var(--nv-fs-16);font-weight:600;letter-spacing:var(--nv-track-title);margin:0 0 var(--nv-s-1)}
+.nv-card-text{font-size:var(--nv-fs-14);color:var(--nv-text-2);margin:0}
+.nv-stack{display:grid;gap:var(--nv-s-4)}
+.nv-row{display:flex;align-items:center;gap:var(--nv-s-3)}
+.nv-divider{height:1px;background:var(--nv-border);border:0;margin:var(--nv-s-4) 0}
+
+/* Chips de status (cor + ícone/rótulo; nunca só cor) */
+.nv-chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 var(--nv-s-3);border-radius:var(--nv-r-pill);font-size:var(--nv-fs-14);font-weight:500;border:1px solid var(--nv-border);color:var(--nv-text-2);background:rgba(255,255,255,.04)}
+.nv-chip .ic{width:16px;height:16px}
+.nv-chip-ok{color:var(--nv-ok);background:var(--nv-ok-bg);border-color:var(--nv-ok-line)}
+.nv-chip-warn{color:var(--nv-warn);background:var(--nv-warn-bg);border-color:var(--nv-warn-line)}
+.nv-chip-err{color:var(--nv-err);background:var(--nv-err-bg);border-color:var(--nv-err-line)}
+.nv-chip-info{color:var(--nv-info);background:var(--nv-info-bg);border-color:var(--nv-info-line)}
+.nv-chip-accent{color:var(--nv-accent);background:var(--nv-accent-soft);border-color:var(--nv-accent-line)}
+.nv-chip-btn{cursor:pointer;min-height:40px;font-family:var(--nv-font)}
+.nv-chip-btn[aria-pressed="true"]{color:var(--nv-accent);background:var(--nv-accent-soft);border-color:var(--nv-accent-line)}
+.nv-dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* Alertas (banner) */
+.nv-alert{display:flex;gap:var(--nv-s-3);align-items:flex-start;padding:var(--nv-s-4);border-radius:var(--nv-r-md);border:1px solid var(--nv-border);background:var(--nv-surface);font-size:var(--nv-fs-14);line-height:1.5}
+.nv-alert .ic{margin-top:1px}.nv-alert strong{display:block;font-weight:600;color:var(--nv-text);font-size:var(--nv-fs-14)}
+.nv-alert-info{background:var(--nv-info-bg);border-color:var(--nv-info-line)}.nv-alert-info .ic{color:var(--nv-info)}
+.nv-alert-warn{background:var(--nv-warn-bg);border-color:var(--nv-warn-line)}.nv-alert-warn .ic{color:var(--nv-warn)}
+.nv-alert-err{background:var(--nv-err-bg);border-color:var(--nv-err-line)}.nv-alert-err .ic{color:var(--nv-err)}
+.nv-alert-ok{background:var(--nv-ok-bg);border-color:var(--nv-ok-line)}.nv-alert-ok .ic{color:var(--nv-ok)}
+
+/* Timeline vertical */
+.nv-timeline{list-style:none;margin:0;padding:0}
+.nv-tl-item{position:relative;padding:0 0 var(--nv-s-5) var(--nv-s-6)}
+.nv-tl-item::before{content:"";position:absolute;left:7px;top:18px;bottom:-2px;width:1px;background:var(--nv-border-strong)}
+.nv-tl-item:last-child::before{display:none}
+.nv-tl-item::after{content:"";position:absolute;left:0;top:4px;width:15px;height:15px;border-radius:50%;background:var(--nv-bg);border:1.5px solid var(--nv-border-strong)}
+.nv-tl-item.done::after{background:var(--nv-accent);border-color:var(--nv-accent)}
+.nv-tl-item.now::after{border-color:var(--nv-accent);box-shadow:0 0 0 4px var(--nv-accent-soft)}
+.nv-tl-title{font-size:var(--nv-fs-16);font-weight:600;margin:0}.nv-tl-meta{font-size:var(--nv-fs-14);color:var(--nv-text-2);margin:2px 0 0}
+
+/* Navegação inferior (mobile) — 4 a 5 itens, rótulo sempre visível */
+.nv-nav{display:flex;justify-content:space-around;gap:var(--nv-s-1);padding:var(--nv-s-2) var(--nv-s-2) max(var(--nv-s-2),env(safe-area-inset-bottom));background:rgba(11,16,32,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--nv-border)}
+.nv-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;border-radius:var(--nv-r-md);color:var(--nv-text-2);text-decoration:none;font-size:var(--nv-fs-14);font-weight:500}
+.nv-nav a[aria-current="page"]{color:var(--nv-accent);background:var(--nv-accent-soft)}
+.nv-nav a:hover{color:var(--nv-text)}
+
+/* Marca */
+.nv-logo{display:inline-flex;align-items:center;gap:10px;font-weight:600;letter-spacing:var(--nv-track-display);font-size:var(--nv-fs-20);color:var(--nv-text)}
+
+/* Entrada sutil */
+.nv-rise{animation:nv-rise var(--nv-dur-4) var(--nv-ease) both}
+@keyframes nv-rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}

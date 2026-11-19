@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06070A">
+<title>Nível - Protótipo</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root{--nv-border-input:#6B7592}/* borda de campos: contraste >=3:1 (WCAG 1.4.11) */
+.nv-input,.nv-btn-secondary{border-color:var(--nv-border-input)}
+.nv-input[aria-invalid="true"],.chk input[aria-invalid="true"]{border-color:var(--nv-err)}
+.nv-input:focus{border-color:var(--nv-accent)}
+html{font-size:100%}
+html.big{font-size:125%}
+*{-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:var(--nv-font);background:#000;color:var(--nv-text);display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.hide{display:none!important}
+.phone{position:relative;width:390px;height:min(844px,100dvh);display:flex;flex-direction:column;overflow:hidden;border-radius:36px;background:var(--nv-grad-hero),var(--nv-bg);box-shadow:0 0 0 1px var(--nv-border-strong),0 32px 80px rgba(0,0,0,.7)}
+@media(max-width:500px){body{display:block}.phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}}
+body.shot{display:block}body.shot .phone{width:100vw;height:100vh;border-radius:0;box-shadow:none}
+[tabindex="-1"]:focus{outline:none}
+
+/* topo */
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px 8px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:var(--nv-fs-20);letter-spacing:var(--nv-track-display)}
+.brand svg{width:30px;height:30px;color:var(--nv-accent)}
+.net{min-height:var(--nv-tap);padding:0 var(--nv-s-4) 0 var(--nv-s-3);border-radius:var(--nv-r-pill);border:1px solid var(--nv-border-strong);background:rgba(255,255,255,.04);display:flex;align-items:center;gap:8px;font-size:var(--nv-fs-14);font-weight:600;transition:background var(--nv-dur-2) var(--nv-ease),border-color var(--nv-dur-2) var(--nv-ease),transform var(--nv-dur-1) var(--nv-ease)}
+.net:hover{background:rgba(255,255,255,.08)}.net:active{transform:scale(.97)}
+.net:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.net .nv-dot{color:var(--nv-ok);box-shadow:0 0 0 3px var(--nv-ok-bg)}
+.net .ic{width:20px;height:20px}.net .ic-off{display:none}
+.net.off{border-color:var(--nv-warn-line);background:var(--nv-warn-bg);color:var(--nv-warn)}
+.net.off .nv-dot{display:none}.net.off .ic-off{display:block}
+
+main{flex:1;overflow-anchor:none;overflow-y:auto;overflow-x:hidden;padding:12px 16px 24px;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.on{display:block;animation:scr var(--nv-dur-3) var(--nv-ease) both}
+@keyframes scr{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stack{display:grid;gap:var(--nv-s-4)}
+.screen h1{font-size:var(--nv-fs-28);line-height:1.2;font-weight:700;letter-spacing:var(--nv-track-display);margin:var(--nv-s-2) 0 var(--nv-s-4)}
+.screen h2{font-size:var(--nv-fs-20);line-height:1.25;font-weight:600;letter-spacing:var(--nv-track-title);margin:var(--nv-s-5) 0 var(--nv-s-3)}
+p{margin:0}
+.mut{color:var(--nv-text-2);font-size:var(--nv-fs-14);line-height:1.5}
+.lead{color:var(--nv-text-2);font-size:var(--nv-fs-16);line-height:1.55}
+.num{font-weight:700;color:var(--nv-text)}
+
+/* botoes */
+.nv-btn+.nv-btn{margin-top:var(--nv-s-3)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--nv-s-3)}
+.btn-row>.nv-btn{margin:0!important}
+.nv-btn-tertiary::after{content:none}
+.nv-btn-tertiary{min-height:var(--nv-tap)}
+.nv-btn-danger{background:transparent;color:var(--nv-err);border-color:var(--nv-err-line)}
+.nv-btn-danger:hover{background:var(--nv-err-bg)}
+.nv-btn-cta{min-height:88px;justify-content:flex-start;padding:0 var(--nv-s-5);gap:var(--nv-s-4);font-size:var(--nv-fs-20);border-radius:var(--nv-r-xl);letter-spacing:-.02em;box-shadow:var(--nv-glow)}
+.nv-btn-cta .grow{flex:1;text-align:left}
+.nv-btn-cta .ic-lg{width:32px;height:32px}
+.back{display:inline-flex;align-items:center;gap:4px;min-height:var(--nv-tap);margin-left:-8px;padding:0 var(--nv-s-3) 0 var(--nv-s-1);background:none;border:0;border-radius:var(--nv-r-md);color:var(--nv-accent);font-weight:600;font-size:var(--nv-fs-16);transition:background var(--nv-dur-2)}
+.back:hover{background:var(--nv-accent-soft)}.back:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.icon-btn{width:var(--nv-tap);height:var(--nv-tap);padding:0;flex:none;border-radius:var(--nv-r-pill)}
+
+/* campos */
+form .nv-field{margin-bottom:var(--nv-s-4)}
+.chk{display:flex;gap:var(--nv-s-3);align-items:flex-start;margin:var(--nv-s-2) 0 var(--nv-s-5);min-height:var(--nv-tap)}
+.chk input{appearance:none;-webkit-appearance:none;width:28px;height:28px;margin:10px 0 0;flex:none;border:1.5px solid var(--nv-border-input);border-radius:8px;background:var(--nv-surface);display:grid;place-content:center;cursor:pointer;transition:background var(--nv-dur-2),border-color var(--nv-dur-2)}
+.chk input::after{content:"";width:12px;height:7px;border-left:2.5px solid var(--nv-on-accent);border-bottom:2.5px solid var(--nv-on-accent);transform:rotate(-45deg) scale(0);margin-top:-2px;transition:transform var(--nv-dur-1) var(--nv-ease)}
+.chk input:checked{background:var(--nv-accent);border-color:var(--nv-accent)}.chk input:checked::after{transform:rotate(-45deg) scale(1)}
+.chk input:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.chk label{font-size:var(--nv-fs-14);line-height:1.5;color:var(--nv-text-2);padding:12px 0;font-weight:400}
+
+/* cards e itens */
+.nv-card{padding:var(--nv-s-4) var(--nv-s-5)}
+.nv-card b.t{display:block;font-size:var(--nv-fs-16);font-weight:600;letter-spacing:-.01em;margin-bottom:var(--nv-s-2)}
+.nv-card .nv-btn{margin-top:var(--nv-s-4)}
+.nv-card>p+p{margin-top:var(--nv-s-2)}
+.item{display:grid;grid-template-columns:1fr auto;column-gap:var(--nv-s-3);align-items:center;width:100%;text-align:left;background:var(--nv-grad-card),var(--nv-surface);border:1px solid var(--nv-border);border-radius:var(--nv-r-lg);padding:var(--nv-s-4);margin:0 0 var(--nv-s-3);min-height:72px;color:var(--nv-text);transition:background var(--nv-dur-2) var(--nv-ease),border-color var(--nv-dur-2) var(--nv-ease),transform var(--nv-dur-1) var(--nv-ease)}
+button.item:hover{background:var(--nv-surface-2);border-color:var(--nv-border-strong)}
+button.item:active{transform:scale(.99)}
+button.item:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.item .chips{grid-column:1;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--nv-s-2)}
+.item b{grid-column:1;display:block;font-size:var(--nv-fs-16);font-weight:600;line-height:1.35;letter-spacing:-.01em}
+.item .mut{grid-column:1;margin-top:4px}
+.item .go{grid-column:2;grid-row:1/span 3;color:var(--nv-text-3)}
+div.item .go{display:none}
+.sos{margin-top:var(--nv-s-5)}
+.sos .num{font-weight:700}
+.demo{display:flex;gap:var(--nv-s-2);align-items:center;font-size:var(--nv-fs-14);color:var(--nv-text-3);border:1px dashed var(--nv-border-strong);border-radius:var(--nv-r-md);padding:var(--nv-s-3) var(--nv-s-4);margin:var(--nv-s-4) 0 0}
+
+/* chips de nivel */
+.nv-chip{min-height:28px;white-space:nowrap}
+.lv1{color:var(--nv-info);background:var(--nv-info-bg);border-color:var(--nv-info-line)}
+.lv2{color:var(--nv-warn);background:var(--nv-warn-bg);border-color:var(--nv-warn-line)}
+.lv3{color:var(--nv-err);background:var(--nv-err-bg);border-color:var(--nv-err-line)}
+.lv4{color:var(--nv-on-accent);background:var(--nv-err);border-color:var(--nv-err);font-weight:600}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:var(--nv-s-2);margin:var(--nv-s-4) 0 0}.legend .nv-chip{justify-content:center;min-height:36px}
+
+/* banner offline */
+.banner{display:none;margin:0 0 var(--nv-s-4)}
+body.offline .banner.offl{display:flex;animation:scr var(--nv-dur-3) var(--nv-ease) both}
+
+/* boas-vindas */
+.hero{display:flex;flex-direction:column;align-items:flex-start;padding:var(--nv-s-5) 0 var(--nv-s-3);min-height:300px}
+.hero-ic{width:96px;height:96px;border-radius:28px;display:grid;place-items:center;margin-bottom:var(--nv-s-5);color:var(--nv-accent);background:linear-gradient(160deg,var(--nv-accent-soft),rgba(99,102,241,.14));border:1px solid var(--nv-accent-line);box-shadow:var(--nv-glow)}
+.hero-ic .ic{width:44px;height:44px;stroke-width:1.4}
+.hero h1{font-size:var(--nv-fs-40);line-height:1.1;margin:0 0 var(--nv-s-3)}
+.hero.sw-anim{animation:scr var(--nv-dur-3) var(--nv-ease) both}
+.dots{display:flex;gap:var(--nv-s-2);margin:var(--nv-s-2) 0 var(--nv-s-5)}
+.dots i{height:6px;width:6px;border-radius:3px;background:var(--nv-border-strong);transition:width var(--nv-dur-3) var(--nv-ease),background var(--nv-dur-2)}
+.dots i.on{width:28px;background:var(--nv-accent)}
+
+/* switches */
+.sw{display:flex;align-items:center;justify-content:space-between;gap:var(--nv-s-3);min-height:var(--nv-tap);background:none;border:0;border-top:1px solid var(--nv-border);padding:var(--nv-s-2) 0;width:100%;text-align:left;font-size:var(--nv-fs-16);border-radius:0}
+.sw:first-of-type{border-top:0}
+.sw:focus-visible{outline:none;box-shadow:var(--nv-focus);border-radius:var(--nv-r-md)}
+.knob{width:52px;height:32px;border-radius:16px;background:var(--nv-surface-3);border:1px solid var(--nv-border-strong);display:flex;align-items:center;padding:3px;flex:none;transition:background var(--nv-dur-2) var(--nv-ease)}
+.knob::after{content:"";width:24px;height:24px;border-radius:50%;background:var(--nv-text);transition:transform var(--nv-dur-2) var(--nv-ease)}
+.sw[aria-checked=true] .knob{background:var(--nv-accent);border-color:var(--nv-accent)}
+.sw[aria-checked=true] .knob::after{transform:translateX(20px);background:var(--nv-on-accent)}
+.card-sw{padding:var(--nv-s-2) var(--nv-s-5)}
+.card-sw .sw+.sw{border-top:1px solid var(--nv-border)}
+.card-sw.pad{padding:var(--nv-s-4) var(--nv-s-5)}
+.card-sw .head{padding:var(--nv-s-2) 0 var(--nv-s-3)}
+.card-sw .head b{display:block;font-weight:600;margin-bottom:var(--nv-s-1)}
+
+/* inicio */
+.greet{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--nv-s-4)}
+.greet h1{margin:0}
+.eyebrow-s{display:flex;align-items:center;gap:var(--nv-s-2);margin-bottom:var(--nv-s-2)}
+
+/* reportar */
+.steps{display:flex;gap:6px;margin:0 0 var(--nv-s-5)}
+.steps span{flex:1;height:6px;border-radius:3px;background:var(--nv-surface-3);position:relative;overflow:hidden}
+.steps span::after{content:"";position:absolute;inset:0;background:var(--nv-accent);transform:scaleX(0);transform-origin:left;transition:transform var(--nv-dur-4) var(--nv-ease)}
+.steps span.on::after{transform:scaleX(1)}
+.step-h{margin-top:0!important}
+.opt{display:flex;align-items:center;gap:var(--nv-s-4);width:100%;min-height:72px;margin-bottom:var(--nv-s-3);padding:var(--nv-s-3) var(--nv-s-4);text-align:left;font-weight:600;font-size:var(--nv-fs-16);letter-spacing:-.01em;background:var(--nv-grad-card),var(--nv-surface);border:1px solid var(--nv-border);border-radius:var(--nv-r-lg);color:var(--nv-text);transition:background var(--nv-dur-2) var(--nv-ease),border-color var(--nv-dur-2) var(--nv-ease),transform var(--nv-dur-1) var(--nv-ease)}
+.opt:hover{background:var(--nv-surface-2);border-color:var(--nv-accent-line)}
+.opt:active{transform:scale(.99)}
+.opt:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.opt .grow{flex:1}.opt .go{color:var(--nv-text-3)}
+.lvl{display:grid;grid-template-columns:1fr 1fr;gap:var(--nv-s-3)}
+.lvl button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--nv-s-3);min-height:156px;padding:var(--nv-s-3);background:var(--nv-grad-card),var(--nv-surface);border:1px solid var(--nv-border);border-radius:var(--nv-r-lg);color:var(--nv-text);transition:background var(--nv-dur-2) var(--nv-ease),border-color var(--nv-dur-2) var(--nv-ease),transform var(--nv-dur-1) var(--nv-ease)}
+.lvl button:hover{background:var(--nv-surface-2);border-color:var(--nv-accent-line)}
+.lvl button:active{transform:scale(.98)}
+.lvl button:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.lvl svg{width:84px;height:84px}
+.done-card{text-align:center;padding:var(--nv-s-6) var(--nv-s-5)!important;margin-bottom:var(--nv-s-4)}
+.ok-ring{width:72px;height:72px;margin:0 auto var(--nv-s-4);border-radius:50%;display:grid;place-items:center;color:var(--nv-ok);background:var(--nv-ok-bg);border:1px solid var(--nv-ok-line);animation:pop var(--nv-dur-4) var(--nv-ease) both}
+.ok-ring .ic{width:36px;height:36px;stroke-width:2}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.done-card h2{margin:0 0 var(--nv-s-2)!important}
+.photo-row{display:flex;gap:var(--nv-s-2);align-items:center}
+
+#r1,#r2,#r3,#r4{animation:scr var(--nv-dur-3) var(--nv-ease) both}
+/* mapa */
+.map{position:relative;height:340px;border-radius:var(--nv-r-xl);overflow:hidden;border:1px solid var(--nv-border);background:#0B1020;box-shadow:var(--nv-sh-2)}
+.map svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;border:2px solid var(--nv-bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--nv-fs-16);color:var(--nv-on-accent);padding:0;box-shadow:0 4px 14px rgba(0,0,0,.5);transition:transform var(--nv-dur-2) var(--nv-ease)}
+.pin:hover{transform:scale(1.08)}
+.pin.p1{background:var(--nv-info)}.pin.p2{background:var(--nv-warn)}.pin.p3{background:#FCA5A5}.pin.p4{background:var(--nv-err)}
+.pin:focus-visible{outline:none;box-shadow:var(--nv-focus)}
+.pin[aria-pressed=true]{transform:scale(1.14);box-shadow:0 0 0 3px var(--nv-bg),0 0 0 5px var(--nv-accent)}
+.me{position:absolute;width:20px;height:20px;margin:-10px;border-radius:50%;background:var(--nv-accent);border:3px solid var(--nv-bg);box-shadow:0 0 0 8px var(--nv-accent-soft)}
+#pinCard{margin-top:var(--nv-s-4)}
+.empty{display:flex;gap:var(--nv-s-3);align-items:flex-start}
+.empty .nv-icobox{flex:none}
+.empty b{display:block;font-weight:600;margin-bottom:2px}
+#pinCard .chips{margin-bottom:var(--nv-s-2)}
+#pinCard>b{display:block;font-size:var(--nv-fs-20);font-weight:600;letter-spacing:-.02em;margin-bottom:var(--nv-s-1)}
+#pinCard .btn-row{margin-top:var(--nv-s-4)}
+#pinCard .btn-row .nv-btn{padding:0 var(--nv-s-3);font-size:var(--nv-fs-14)}
+#cfTxt{margin-top:var(--nv-s-3)}
+#cfTxt:empty{display:none}
+#speakTxt:empty{display:none}
+#speakTxt{margin:var(--nv-s-3) 0}
+.speak-row{margin:0 0 var(--nv-s-3)}
+
+/* timeline */
+.nv-timeline{margin:var(--nv-s-2) 0 var(--nv-s-4)}
+.nv-tl-item.now::after{background:var(--nv-accent);border-color:var(--nv-accent);box-shadow:0 0 0 4px var(--nv-accent-soft)}
+.nv-tl-item.pend .nv-tl-title{color:var(--nv-text-2);font-weight:500}
+.nv-tl-item.done::before{background:var(--nv-accent-line)}
+.nv-tl-item.err::after{background:var(--nv-err);border-color:var(--nv-err);box-shadow:0 0 0 4px var(--nv-err-bg)}
+.nv-tl-item{animation:scr var(--nv-dur-3) var(--nv-ease) both}
+.nv-tl-item:nth-child(2){animation-delay:60ms}.nv-tl-item:nth-child(3){animation-delay:120ms}.nv-tl-item:nth-child(4){animation-delay:180ms}
+#rate .btn-row{margin-top:var(--nv-s-4)}
+#rateTxt{margin-top:var(--nv-s-3)}
+#rateTxt:empty{display:none}
+
+/* perfil */
+.who{display:flex;align-items:center;gap:var(--nv-s-4)}
+.avatar{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--nv-accent-soft);border:1px solid var(--nv-accent-line);color:var(--nv-accent);flex:none}
+
+/* toast */
+.toast{position:absolute;left:16px;right:16px;bottom:92px;display:flex;align-items:center;gap:var(--nv-s-3);background:var(--nv-surface-3);border:1px solid var(--nv-ok-line);color:var(--nv-text);border-radius:var(--nv-r-md);padding:var(--nv-s-3) var(--nv-s-4);font-size:var(--nv-fs-14);font-weight:500;z-index:5;box-shadow:var(--nv-sh-3);opacity:0;transform:translateY(12px);pointer-events:none;visibility:hidden;transition:opacity var(--nv-dur-3) var(--nv-ease),transform var(--nv-dur-3) var(--nv-ease),visibility 0s var(--nv-dur-3)}
+.toast.show{opacity:1;transform:none;visibility:visible;transition-delay:0s}
+.toast .ic{color:var(--nv-ok)}
+
+/* nav */
+.nv-nav{flex:none;padding-top:var(--nv-s-2)}
+.nv-nav a{min-width:0;justify-content:flex-start;padding:8px 2px 6px;font-size:var(--nv-fs-14);line-height:1.1;text-align:center;letter-spacing:-.01em;transition:color var(--nv-dur-2),background var(--nv-dur-2),transform var(--nv-dur-1) var(--nv-ease)}
+.nv-nav a:active{transform:scale(.95)}
+.nv-nav a .ic{transition:transform var(--nv-dur-2) var(--nv-ease)}
+.nv-nav a[aria-current="page"] .ic{transform:translateY(-1px)}
+.nv-nav a[aria-current="page"]{font-weight:600}
+.nv-nav a.fab .ic-wrap{width:44px;height:30px;border-radius:15px;background:var(--nv-accent);color:var(--nv-on-accent);display:grid;place-items:center}
+.nv-nav a.fab{color:var(--nv-text)}
+.nv-nav a.fab[aria-current="page"]{color:var(--nv-accent)}
+.nv-nav a.fab .ic{width:22px;height:22px;stroke-width:2}
+
+/* skeleton */
+.skel{display:none}
+.screen.loading>*:not(.skel){display:none!important}
+.screen.loading>.skel{display:grid;gap:var(--nv-s-3)}
+.sk{border-radius:var(--nv-r-lg);background:linear-gradient(90deg,var(--nv-surface) 0%,var(--nv-surface-3) 50%,var(--nv-surface) 100%);background-size:200% 100%;animation:shim 1.2s linear infinite;border:1px solid var(--nv-border-soft)}
+@keyframes shim{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk.h1{height:34px;width:46%;margin:var(--nv-s-2) 0 var(--nv-s-2)}
+.sk.map{height:340px;border-radius:var(--nv-r-xl)}
+.sk.card{height:92px}.sk.line{height:16px;border-radius:8px;width:70%}
+@media(prefers-reduced-motion:reduce){.sk{animation:none}}
+#inicio .stack{gap:var(--nv-s-3)}
+#inicio .nv-btn-cta{min-height:72px;border-radius:var(--nv-r-lg)}
+#inicio .nv-card{padding:var(--nv-s-4)}
+#inicio .nv-card .nv-btn{margin-top:var(--nv-s-3)}
+#inicio .nv-card b.t{margin-bottom:var(--nv-s-2)}
+#inicio .sos{margin-top:var(--nv-s-3)}
+#inicio h1{margin-bottom:0}
+.top{min-height:60px;padding:8px 16px 4px}
+body.shot .nv-nav{padding-bottom:18px}
+</style>
+</head>
+<body class="nv">
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<!-- Icones: Lucide (licenca ISC), traco 1.5. Uso: <svg class="ic"><use href="icons.svg#i-home"/></svg> -->
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-droplet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></symbol>
+<symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+<symbol id="i-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+<symbol id="i-shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></symbol>
+<symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+<symbol id="i-triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-grate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6 6 18" opacity=".55"/></symbol>
+<symbol id="i-waves" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8c2.5-2.5 4.5-2.5 7 0s4.5 2.5 7 0 4.5-2.5 6 0"/><path d="M2 15c2.5-2.5 4.5-2.5 7 0s4.5 2.5 7 0 4.5-2.5 6 0"/></symbol>
+<symbol id="i-logo" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 14c4.5-3.5 7.5-3.5 12 0s7.5 3.5 12 0 7.5-3.5 12 0"/><path d="M6 24c4.5-3.5 7.5-3.5 12 0s7.5 3.5 12 0 7.5-3.5 12 0" opacity=".7"/><path d="M6 34c4.5-3.5 7.5-3.5 12 0s7.5 3.5 12 0 7.5-3.5 12 0" opacity=".4"/></symbol>
+</svg>
+<div class="phone nv" id="phone">
+  <header class="top">
+    <div class="brand" aria-label="Nível"><svg aria-hidden="true"><use href="#i-logo"/></svg>Nível</div>
+    <button class="net" id="netBtn" type="button" aria-pressed="false" aria-label="Simular conexão: online. Toque para ficar sem internet"><span class="nv-dot" aria-hidden="true"></span><svg class="ic ic-off" aria-hidden="true"><use href="#i-wifi-off"/></svg><span id="netTxt">Online</span></button>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+  <!-- 1 BOAS-VINDAS -->
+  <section class="screen" id="boas-vindas" aria-labelledby="h-bv">
+    <div class="hero" id="bvCard"></div>
+    <div class="dots" id="bvDots" aria-hidden="true"></div>
+    <div class="nv-card card-sw pad"><div class="head"><b>Antes de começar</b>
+      <p class="mut">O app usa pouco dado e a localização só com a sua permissão. Escolha como prefere ver:</p></div>
+      <button class="sw" role="switch" aria-checked="false" id="swBig"><span>Letras maiores</span><span class="knob"></span></button>
+      <button class="sw" role="switch" aria-checked="false" id="swHc"><span>Alto contraste</span><span class="knob"></span></button>
+    </div>
+    <div class="btn-row" style="margin-top:var(--nv-s-5)"><button class="nv-btn nv-btn-secondary" type="button" id="bvNext">Próximo</button><button class="nv-btn nv-btn-primary" type="button" data-go="cadastro">Começar</button></div>
+    <button class="nv-btn nv-btn-tertiary nv-btn-block" type="button" data-go="login" style="margin-top:var(--nv-s-2)">Já tenho conta</button>
+    <p class="demo"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-eye"/></svg>Protótipo demonstrativo. Dados fictícios.</p>
+  </section>
+
+  <!-- 2 CADASTRO -->
+  <section class="screen" id="cadastro" aria-labelledby="h-cad">
+    <button class="back" data-go="boas-vindas" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chevron-left"/></svg>Voltar</button>
+    <h1 id="h-cad">Cadastro</h1>
+    <form novalidate onsubmit="event.preventDefault();var c=document.getElementById('c5');if(!c.checked){c.setAttribute('aria-invalid','true');document.getElementById('c5err').hidden=false;c.focus();return}go('login')">
+      <div class="nv-field"><label class="nv-label" for="c1">Nome</label><input class="nv-input" id="c1" type="text" autocomplete="name" value="Dona Marta"></div>
+      <div class="nv-field"><label class="nv-label" for="c2">E-mail ou telefone</label><input class="nv-input" id="c2" type="text" inputmode="email" autocomplete="email" value="marta@exemplo.invalid"></div>
+      <div class="nv-field"><label class="nv-label" for="c3">Senha</label><input class="nv-input" id="c3" type="password" autocomplete="new-password" value="senhademo"></div>
+      <div class="nv-field"><label class="nv-label" for="c4">Bairro ou CEP</label><input class="nv-input" id="c4" type="text" autocomplete="postal-code" value="Bairro Exemplo"></div>
+      <div class="chk"><input id="c5" type="checkbox" aria-describedby="c5err" onchange="if(this.checked){this.removeAttribute('aria-invalid');document.getElementById('c5err').hidden=true}"><label for="c5">Concordo com o uso dos meus dados para alertar vizinhos e priorizar zeladoria (LGPD). Localização é opcional.</label></div>
+      <p class="nv-help err" id="c5err" role="alert" hidden style="margin:0 0 var(--nv-s-3)">Para criar a conta, marque o consentimento acima. Sem ele, não é possível continuar.</p>
+      <button class="nv-btn nv-btn-primary nv-btn-block" type="submit">Criar conta</button>
+    </form>
+  </section>
+
+  <!-- 3 LOGIN -->
+  <section class="screen" id="login" aria-labelledby="h-log">
+    <button class="back" data-go="cadastro" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chevron-left"/></svg>Voltar</button>
+    <h1 id="h-log">Login</h1>
+    <p class="lead" style="margin-bottom:var(--nv-s-5)">A sessão fica salva no aparelho, para você não precisar entrar de novo com a internet fraca.</p>
+    <form onsubmit="event.preventDefault();go('inicio')">
+      <div class="nv-field"><label class="nv-label" for="l1">E-mail ou telefone</label><input class="nv-input" id="l1" type="text" inputmode="email" autocomplete="username" value="marta@exemplo.invalid"></div>
+      <div class="nv-field"><label class="nv-label" for="l2">Senha</label><input class="nv-input" id="l2" type="password" autocomplete="current-password" value="senhademo"></div>
+      <button class="nv-btn nv-btn-primary nv-btn-block" type="submit" style="margin-top:var(--nv-s-5)">Entrar</button>
+    </form>
+  </section>
+
+  <!-- 4 INICIO -->
+  <section class="screen nav-on" id="inicio" aria-labelledby="h-ini">
+    <div class="greet">
+      <h1 id="h-ini">Olá, Marta</h1>
+      <button class="nv-btn nv-btn-secondary icon-btn" data-go="perfil" type="button" aria-label="Perfil"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg></button>
+    </div>
+    <div class="banner offl nv-alert nv-alert-warn" role="status"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-wifi-off"/></svg><div>Sem internet: relatos serão enviados depois. <span id="qInfo"></span></div></div>
+    <div class="stack">
+    <button class="nv-btn nv-btn-primary nv-btn-block nv-btn-cta" type="button" data-go="reportar">
+      <svg class="ic ic-lg" aria-hidden="true"><use href="#i-droplet"/></svg><span class="grow">Reportar alagamento</span><svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+    <div class="nv-card"><b class="t">Situação do bairro</b>
+      <p><span class="nv-chip lv2"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>Atenção</span></p>
+      <p class="mut" style="margin-top:var(--nv-s-3)">2 relatos recentes perto de você (exemplo).</p>
+      <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" data-go="mapa">Ver no Mapa</button></div>
+    <div class="nv-card"><b class="t">Último alerta</b>
+      <p style="font-size:var(--nv-fs-16)">Rua Exemplo com água na cintura, 400 m de você.</p>
+      <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" data-go="alertas">Ver Alertas</button></div>
+    <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" data-go="meus-relatos"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-list"/></svg>Meus Relatos</button>
+    </div>
+    <div class="sos nv-alert nv-alert-err"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><div>Emergência: ligue <span class="num">199</span> (Defesa Civil) ou <span class="num">193</span> (Bombeiros). O Nível não substitui o alerta oficial.</div></div>
+  </section>
+
+  <!-- 5 REPORTAR -->
+  <section class="screen nav-on" id="reportar" aria-labelledby="h-rep">
+    <h1 id="h-rep">Reportar</h1>
+    <div class="banner offl nv-alert nv-alert-warn" role="status"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-wifi-off"/></svg><div>Sem internet: será salvo no celular.</div></div>
+    <div class="steps" id="rSteps" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div id="r1">
+      <h2 class="step-h">1 de 3. O que está acontecendo?</h2>
+      <button class="opt" type="button" data-tipo="Alagamento na rua">
+        <span class="nv-icobox"><svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg></span><span class="grow">Alagamento na rua</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+      <button class="opt" type="button" data-tipo="Bueiro entupido">
+        <span class="nv-icobox"><svg class="ic" aria-hidden="true"><use href="#i-grate"/></svg></span><span class="grow">Bueiro entupido</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+      <button class="opt" type="button" data-tipo="Córrego assoreado">
+        <span class="nv-icobox"><svg class="ic" aria-hidden="true"><use href="#i-waves"/></svg></span><span class="grow">Córrego assoreado</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    </div>
+    <div id="r2" class="hide">
+      <h2 class="step-h">2 de 3. Quanto a água subiu?</h2>
+      <div class="lvl" id="lvlGrid"></div>
+    </div>
+    <div id="r3" class="hide">
+      <h2 class="step-h">3 de 3. Foto e local</h2>
+      <div class="nv-card"><b class="t" id="rResumo"></b>
+        <p style="margin-top:var(--nv-s-3)"><span class="nv-chip nv-chip-accent"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg>Local: perto de você (simulado)</span></p>
+        <p class="mut" style="margin-top:var(--nv-s-3)">Local demonstrativo, sem coleta de GPS.</p><label class="nv-label" for="reportLocal" style="margin-top:16px">Rua ou referência da ocorrência</label><input class="nv-input" id="reportLocal" maxlength="120" value="Rua Exemplo" autocomplete="off"></div>
+      <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" id="photoBtn" style="margin-top:var(--nv-s-4)"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg>Adicionar foto (simulada)</button>
+      <p class="mut" id="photoTxt" style="margin:var(--nv-s-3) 0 var(--nv-s-4)">Foto opcional. Evite mostrar pessoas e placas.</p>
+      <button class="nv-btn nv-btn-primary nv-btn-block" type="button" id="sendBtn">Enviar relato</button>
+    </div>
+    <div id="r4" class="hide" role="status">
+      <div class="nv-card nv-card-lg done-card">
+        <div class="ok-ring"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></div>
+        <h2 id="r4t"></h2><p class="mut" id="r4p"></p></div>
+      <button class="nv-btn nv-btn-primary nv-btn-block" type="button" data-go="mapa">Ver no Mapa</button>
+      <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" data-go="meus-relatos">Meus Relatos</button>
+    </div>
+    <div class="sos nv-alert nv-alert-err"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><div>Em perigo agora? Ligue <span class="num">199</span> ou <span class="num">193</span>.</div></div>
+  </section>
+
+  <!-- 6 MAPA -->
+  <section class="screen nav-on" id="mapa" aria-labelledby="h-map">
+    <h1 id="h-map">Mapa</h1>
+    <div class="banner offl nv-alert nv-alert-warn" role="status"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-wifi-off"/></svg><div>Sem internet: mostrando o último mapa salvo.</div></div>
+    <div class="map" id="mapBox">
+      <svg class="bg" viewBox="0 0 358 340" preserveAspectRatio="none" aria-hidden="true">
+        <rect width="358" height="340" fill="#0B1020"/>
+        <path d="M0 150h358M0 262h358M120 0v340M250 0v340" stroke="#161D33" stroke-width="22"/>
+        <path d="M0 90h358M0 200h358M0 285h358M70 0v340M180 0v340M290 0v340" stroke="#1D2542" stroke-width="12"/>
+        <path d="M0 90h358M0 200h358M0 285h358M70 0v340M180 0v340M290 0v340" stroke="#06070A" stroke-width="1.5" stroke-dasharray="6 8" opacity=".6"/>
+        <path d="M0 250c60-30 90 40 160 10s110 20 198-10" stroke="#2DD4BF" stroke-opacity=".28" stroke-width="12" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="me" style="left:50%;top:60%" role="img" aria-label="Você está aqui"></span>
+    </div>
+    <div id="pinCard" class="nv-card" aria-live="polite"><div class="empty"><span class="nv-icobox"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></span><div><b>Toque num ponto do mapa</b><p class="mut">Veja o relato e confirme com um toque.</p></div></div></div>
+    <div class="legend" aria-label="Legenda de níveis">
+      <span class="nv-chip lv1">1 Tornozelo</span><span class="nv-chip lv2">2 Joelho</span><span class="nv-chip lv3">3 Cintura</span><span class="nv-chip lv4">4 Acima</span></div>
+    <p class="demo"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-eye"/></svg>Pontos e ruas fictícios para demonstração.</p>
+  </section>
+
+  <!-- 7 ALERTAS -->
+  <section class="screen nav-on" id="alertas" aria-labelledby="h-al">
+    <h1 id="h-al">Alertas</h1>
+    <button class="item" type="button" id="alert1">
+      <span class="chips"><span class="nv-chip lv3"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>Cintura</span></span><b>Rua Exemplo com água na cintura, 400 m de você.</b>
+      <span class="mut">Agora (exemplo) · confirmado por vizinhos</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <div class="speak-row"><button class="nv-btn nv-btn-secondary nv-btn-block" type="button" id="speak"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-volume"/></svg>Ouvir alerta</button></div>
+    <p class="mut" id="speakTxt" role="status"></p>
+    <button class="item" type="button" data-go="mapa"><span class="chips"><span class="nv-chip lv2"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>Joelho</span></span><b>Travessa Modelo com água no joelho, 900 m.</b><span class="mut">Há pouco (exemplo)</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <button class="item" type="button" data-go="mapa"><span class="chips"><span class="nv-chip lv1"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>Tornozelo</span></span><b>Avenida Demo: água baixou.</b><span class="mut">Mais cedo (exemplo)</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <div class="sos nv-alert nv-alert-err"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><div>Siga sempre o alerta oficial da Defesa Civil. Emergência: <span class="num">199</span> ou <span class="num">193</span>.</div></div>
+  </section>
+
+  <!-- 8 MEUS RELATOS -->
+  <section class="screen nav-on" id="meus-relatos" aria-labelledby="h-mr">
+    <h1 id="h-mr">Meus Relatos</h1>
+    <div class="banner offl nv-alert nv-alert-warn" role="status"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-clock"/></svg><div>Fila de envio: <span id="qCount">0</span> aguardando internet.</div></div>
+    <div id="queueList"></div>
+    <button class="item" type="button" data-detail="1"><span class="chips"><span class="nv-chip nv-chip-warn"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>Em obra</span> <span class="nv-chip nv-chip-accent">Ponto Crítico</span></span><b>Bueiro entupido, Rua Exemplo</b><span class="mut">Chamado de zeladoria</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <button class="item" type="button" data-detail="2"><span class="chips"><span class="nv-chip nv-chip-ok"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Resolvido</span> <span class="nv-chip nv-chip-accent">Ponto Crítico</span></span><b>Córrego assoreado, Travessa Modelo</b><span class="mut">Chamado de zeladoria</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <button class="item" type="button" data-detail="3"><span class="chips"><span class="nv-chip lv2"><svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>Joelho</span> <span class="nv-chip nv-chip-accent">Ativo</span></span><b>Alagamento na rua</b><span class="mut">2 vizinhos confirmaram (exemplo)</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" id="markPC" style="margin-top:var(--nv-s-4)">Marcar bueiro como Ponto Crítico</button>
+  </section>
+
+  <!-- 9 DETALHE DO RELATO -->
+  <section class="screen nav-on" id="detalhe" aria-labelledby="h-det">
+    <button class="back" data-go="meus-relatos" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chevron-left"/></svg>Meus Relatos</button>
+    <h1 id="h-det">Detalhe do Relato</h1>
+    <div class="nv-card"><b class="t">Bueiro entupido, Rua Exemplo</b>
+      <p>Status: <span class="nv-chip nv-chip-warn" id="dStatus">Em obra</span></p>
+      <p class="mut" id="dData" style="margin-top:var(--nv-s-3)"></p></div>
+    <h2>Linha do tempo</h2>
+    <ol class="nv-timeline" id="tl"></ol>
+    <div id="dAct">
+      <button class="nv-btn nv-btn-secondary nv-btn-block" type="button" id="advance">Simular próximo status (demo)</button>
+    </div>
+    <div id="rate" class="nv-card hide"><b class="t">A solução resolveu?</b>
+      <div class="btn-row"><button class="nv-btn nv-btn-primary" type="button" id="rateOk">Resolveu</button><button class="nv-btn nv-btn-secondary" type="button" id="rateNo">Não resolveu</button></div>
+      <p class="mut" id="rateTxt" role="status"></p></div>
+  </section>
+
+  <!-- 10 PERFIL -->
+  <section class="screen nav-on" id="perfil" aria-labelledby="h-pf">
+    <button class="back" data-go="inicio" type="button"><svg class="ic" aria-hidden="true"><use href="#i-chevron-left"/></svg>Início</button>
+    <h1 id="h-pf">Perfil</h1>
+    <div class="nv-card who"><span class="avatar"><svg class="ic ic-lg" aria-hidden="true"><use href="#i-user"/></svg></span><div><b class="t" style="margin:0">Dona Marta</b><p class="mut">marta@exemplo.invalid · Bairro Exemplo</p></div></div>
+    <h2>Acessibilidade</h2>
+    <div class="nv-card card-sw">
+      <button class="sw" role="switch" aria-checked="false" id="swBig2"><span>Letras maiores</span><span class="knob"></span></button>
+      <button class="sw" role="switch" aria-checked="false" id="swHc2"><span>Alto contraste</span><span class="knob"></span></button>
+      <button class="sw" role="switch" aria-checked="true" id="swEco"><span>Economia de dados</span><span class="knob"></span></button>
+    </div>
+    <h2>Privacidade</h2>
+    <div class="nv-card card-sw"><button class="sw" role="switch" aria-checked="true"><span>Consentimento: localização e foto</span><span class="knob"></span></button></div>
+    <div class="stack" style="margin-top:var(--nv-s-4);gap:0">
+    <button class="nv-btn nv-btn-secondary nv-btn-block" type="button"><svg class="ic ic-sm" aria-hidden="true"><use href="#i-file-text"/></svg>Exportar meus dados</button>
+    <button class="nv-btn nv-btn-danger nv-btn-block" type="button">Excluir minha conta</button>
+    <button class="nv-btn nv-btn-tertiary nv-btn-block" type="button" data-go="boas-vindas">Sair</button>
+    </div>
+  </section>
+
+  </main>
+
+  <div class="toast" id="toast" role="status"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span id="toastT"></span></div>
+  <nav class="nv-nav hide" id="nav" aria-label="Menu principal">
+    <a href="#inicio" data-go="inicio"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>Início</a>
+    <a href="#mapa" data-go="mapa"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg>Mapa</a>
+    <a href="#reportar" data-go="reportar" class="fab"><span class="ic-wrap"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span>Reportar</a>
+    <a href="#alertas" data-go="alertas"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg>Alertas</a>
+    <a href="#meus-relatos" data-go="meus-relatos"><svg class="ic" aria-hidden="true"><use href="#i-list"/></svg>Meus Relatos</a>
+  </nav>
+</div>
+
+<script>
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var NAVMAP={detalhe:'meus-relatos',perfil:'inicio'};
+var offline=false,queue=[],cur='boas-vindas',bv=0,rep={},booted=false;
+var LV=[["Tornozelo",1,0.78],["Joelho",2,0.62],["Cintura",3,0.45],["Acima da cintura",4,0.28]];
+var TRI='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg>';
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function fig(y){return '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="12" r="5.5" fill="none" stroke="#A8B0C5" stroke-width="2.5"/><path d="M32 18v20M32 23l-10 10M32 23l10 10M32 38l-8 20M32 38l8 20" stroke="#A8B0C5" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="2" y="'+(y*64)+'" width="60" height="'+(64-y*64)+'" rx="3" fill="#2DD4BF" opacity=".35"/><path d="M2 '+(y*64)+'h60" stroke="#2DD4BF" stroke-width="2"/></svg>'}
+var BV=[["Avise a rua","Em poucos passos, diga quanto a água subiu. Funciona mesmo com internet fraca.","i-droplet"],
+["Veja os vizinhos","Mapa com relatos recentes, por cor e por nível.","i-map"],
+["Acompanhe a solução","Do relato ao chamado: Enviado, Em análise, Em obra, Resolvido.","i-check"]];
+function renderBV(anim){var c=BV[bv],h=$('#bvCard');h.innerHTML='<div class="hero-ic"><svg class="ic" aria-hidden="true"><use href="#'+c[2]+'"/></svg></div><h1 id="h-bv">'+c[0]+'</h1><p class="lead">'+c[1]+'</p>';
+  h.classList.remove('sw-anim');if(anim){void h.offsetWidth;h.classList.add('sw-anim')}
+  $('#bvDots').innerHTML=BV.map(function(_,i){return '<i class="'+(i==bv?'on':'')+'"></i>'}).join('')}
+$('#bvNext').onclick=function(){bv=(bv+1)%3;renderBV(true)};
+
+function skelHTML(id){if(id==='mapa')return '<div class="sk h1"></div><div class="sk map"></div><div class="sk card"></div>';
+  return '<div class="sk h1"></div><div class="sk card"></div><div class="sk card"></div><div class="sk card"></div>'}
+var SKEL={mapa:1,alertas:1,'meus-relatos':1,detalhe:1},skT;
+function go(id){
+  var prev=cur;cur=id;
+  $$('.screen').forEach(function(s){s.classList.remove('loading');var k=$('.skel',s);if(k)k.remove();s.classList.toggle('on',s.id===id)});
+  var sc=$('#'+id);
+  var n=sc.classList.contains('nav-on');$('#nav').classList.toggle('hide',!n);
+  var act=NAVMAP[id]||id;$$('#nav a').forEach(function(b){if(b.dataset.go===act)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(id==='reportar')repStep(1);
+  if(id==='detalhe')renderTL();
+  if(id==='meus-relatos')renderQ();if(id==='mapa')renderPins();if(id==='alertas')renderNewAlerts();if(id==='detalhe')refreshDetails();
+  $('#main').scrollTop=0;
+  try{history.replaceState(null,'','#'+id)}catch(e){}
+  clearTimeout(skT);
+  if(booted&&!reduce&&SKEL[id]&&prev!==id&&!document.body.classList.contains('shot')){
+    var k=document.createElement('div');k.className='skel';k.setAttribute('aria-hidden','true');k.innerHTML=skelHTML(id);sc.insertBefore(k,sc.firstChild);sc.classList.add('loading');
+    skT=setTimeout(function(){sc.classList.remove('loading');k.remove()},380)}
+}
+document.addEventListener('click',function(e){var t=e.target.closest('[data-go]');if(t){e.preventDefault();go(t.dataset.go)}var d=e.target.closest('[data-detail]');if(d){openDetail(d.dataset.detail)}});
+
+function setNet(off){offline=off;document.body.classList.toggle('offline',off);var b=$('#netBtn');b.classList.toggle('off',off);b.setAttribute('aria-pressed',off);$('#netTxt').textContent=off?'Sem internet':'Online';
+  b.setAttribute('aria-label','Simular conexão: '+(off?'sem internet':'online')+'. Toque para alternar');updQ();
+  if(!off){var pending=queue.filter(function(q){return !q.sent});pending.forEach(function(q){q.sent=true});Object.keys(confirmations).forEach(function(k){confirmations[k].pending=false});if(pending.length)toast('Conexão simulada: '+pending.length+' relato(s) sincronizado(s).');renderQ()}persistDemo();}
+$('#netBtn').onclick=function(){setNet(!offline)};
+function updQ(){var n=queue.filter(function(q){return !q.sent}).length;$('#qCount').textContent=n;$('#qInfo').textContent=n?'Na fila: '+n+'.':''}
+function toast(m){var t=$('#toast');$('#toastT').textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove('show')},2600)}
+function lvChip(l,txt){return '<span class="nv-chip lv'+l+'">'+TRI+txt+'</span>'}
+function renderQ(){updQ();$('#queueList').innerHTML=queue.map(function(q){return '<div class="item" role="group"><span class="chips"><span class="nv-chip '+(q.sent?'nv-chip-ok':'nv-chip-warn')+'"><svg class="ic" aria-hidden="true"><use href="#'+(q.sent?'i-check':'i-clock')+'"/></svg>'+(q.sent?'Enviado':'Salvo no celular · na fila')+'</span> '+lvChip(q.l,LV[q.l-1][0])+'</span><b>'+q.tipo+'</b><span class="mut">Relato novo (demo)</span></div>'}).join('')}
+
+/* Reportar */
+function repStep(n){['r1','r2','r3','r4'].forEach(function(id,i){$('#'+id).classList.toggle('hide',i+1!==n)});
+  var two=n>1&&rep.l===0;$$('#rSteps span').forEach(function(s,i){s.hidden=two&&i===2;s.classList.toggle('on',two?i<(n>=3?2:1):i<Math.min(n,3))});if(n===1){rep={};$('#reportLocal').value='Rua Exemplo';$('#photoTxt').textContent='Foto opcional. Evite mostrar pessoas e placas.';$('#photoBtn').innerHTML='<svg class="ic ic-sm" aria-hidden="true"><use href="#i-camera"/></svg>Adicionar foto (simulada)'}
+  $('#r3 .step-h').textContent=rep.l===0?'2 de 2. Foto e local':'3 de 3. Foto e local';if(n>1&&booted)$('#main').scrollTop=0}
+$$('[data-tipo]').forEach(function(b){b.onclick=function(){rep.tipo=b.dataset.tipo;if(rep.tipo==='Alagamento na rua'){repStep(2)}else{rep.l=0;$('#rResumo').textContent=rep.tipo;repStep(3)}}});
+$('#lvlGrid').innerHTML=LV.map(function(l){return '<button type="button" data-l="'+l[1]+'" aria-label="Nível '+l[1]+': '+l[0]+'">'+fig(l[2])+'<span class="nv-chip lv'+l[1]+'">'+l[1]+' '+l[0]+'</span></button>'}).join('');
+$$('[data-l]').forEach(function(b){b.onclick=function(){rep.l=+b.dataset.l;$('#rResumo').textContent=rep.tipo+' · água '+LV[rep.l-1][0].toLowerCase();repStep(3)}});
+$('#photoBtn').onclick=function(){rep.foto=1;$('#photoTxt').textContent='Foto simulada anexada (enviada só com rede).';$('#photoBtn').innerHTML='<svg class="ic ic-sm" aria-hidden="true"><use href="#i-check"/></svg>Adicionar foto (simulada)'};
+$('#sendBtn').onclick=function(){
+ if(!rep.tipo){toast('Escolha uma ocorrência primeiro.');return}
+ var place=$('#reportLocal').value.trim();if(!place){$('#reportLocal').focus();toast('Informe uma rua ou referência.');return}
+ var q={id:'relato-'+Date.now(),tipo:rep.tipo,l:rep.l||0,local:place,time:Date.now(),sent:!offline};
+ queue.unshift(q);persistDemo();
+ $('#r4t').textContent=offline?'Salvo no celular':'Relato enviado (demo)';
+ $('#r4p').textContent=offline?'O relato permanece salvo após recarregar. Alterne para Online para simular o envio.':'Seu relato aparece no mapa, nos alertas e em Meus Relatos desta demonstração.';
+ repStep(4);updQ();renderPins();renderNewAlerts()
+};
+/* Mapa */
+
+var PINS=[{x:46,y:26,l:3,n:"Rua Exemplo",t:"Água na cintura. 3 confirmações (demo)."},{x:76,y:60,l:2,n:"Travessa Modelo",t:"Água no joelho. 1 confirmação (demo)."},{x:20,y:73,l:1,n:"Avenida Demo",t:"Água no tornozelo. Já baixando (demo)."},{x:50,y:84,l:3,n:"Rua Fictícia",t:"Água na cintura. 2 confirmações (demo)."}];
+renderPins();
+
+/* Alertas */
+$('#alert1').onclick=function(){go('mapa');$$('.pin')[0].click()};
+$('#speak').onclick=function(){var m='Rua Exemplo com água na cintura, a 400 metros de você.';$('#speakTxt').textContent='Lendo em voz alta: '+m;try{var u=new SpeechSynthesisUtterance(m);u.lang='pt-BR';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+$('#markPC').onclick=function(){openDetail('1');toast('Ponto Crítico: acompanhe o chamado demonstrativo.')};
+
+/* Detalhe / linha do tempo */
+var ST=["Enviado","Em análise","Em obra","Resolvido"],DT=["Dia 1 (exemplo)","Dia 2 (exemplo)","Dia 4 (exemplo)","Dia 7 (exemplo)"],stIdx=2,reopened=false;
+function renderTL(){
+  $('#tl').innerHTML=ST.map(function(s,i){var c=i<stIdx?'done':(i==stIdx?'done now':'pend');if(i==stIdx&&i==3)c='done now';
+    return '<li class="nv-tl-item '+c+'"'+(i==stIdx?' aria-current="step"':'')+'><p class="nv-tl-title">'+s+'</p><p class="nv-tl-meta">'+(i<=stIdx?DT[i]:'Pendente')+'</p></li>'}).join('')+(reopened?'<li class="nv-tl-item err"><p class="nv-tl-title">Reaberto</p><p class="nv-tl-meta">Chamado reaberto após avaliação</p></li>':'');
+  var s=reopened?'Reaberto':ST[stIdx];var d=$('#dStatus');var k=(stIdx==3&&!reopened)?'ok':reopened?'err':'warn';
+  d.innerHTML='<svg class="ic" aria-hidden="true"><use href="#'+(k=='ok'?'i-check':k=='err'?'i-triangle-alert':'i-clock')+'"/></svg>'+s;d.className='nv-chip nv-chip-'+k;
+  $('#dData').textContent=stIdx==3&&!reopened?'Resolvido em '+DT[3]:'Chamado de zeladoria · atualizado '+DT[stIdx];
+  $('#advance').classList.toggle('hide',stIdx==3);$('#rate').classList.toggle('hide',!(stIdx==3&&!reopened));}
+$('#advance').onclick=function(){if(stIdx<3){stIdx++;detailStates[selectedReport]={st:stIdx,reopened:false};persistDemo();renderTL();refreshDetails()}};
+$('#rateOk').onclick=function(){$('#rateTxt').textContent='Obrigada pela avaliação: marcado como resolvido (demo).';persistDemo()};
+$('#rateNo').onclick=function(){reopened=true;detailStates[selectedReport]={st:stIdx,reopened:true};persistDemo();renderTL();refreshDetails();toast('Chamado reaberto (demo).')};
+
+/* Acessibilidade */
+function sw(id,fn){var b=$('#'+id);b.onclick=function(){var v=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',v);fn(v)}}
+function big(v){document.body.classList.toggle('big',v);document.documentElement.classList.toggle('big',v);['swBig','swBig2'].forEach(function(i){$('#'+i).setAttribute('aria-checked',v)});if(booted)persistDemo()}
+function hc(v){document.body.classList.toggle('hc',v);['swHc','swHc2'].forEach(function(i){$('#'+i).setAttribute('aria-checked',v)})}
+sw('swBig',big);sw('swBig2',big);sw('swHc',hc);sw('swHc2',hc);sw('swEco',function(){});
+$$('.sw[role=switch]').forEach(function(b){if(!b.id)b.onclick=function(){b.setAttribute('aria-checked',b.getAttribute('aria-checked')!=='true')}});
+
+
+
+var demo;
+try { demo=JSON.parse(localStorage.getItem('nivel-previa-v3')||'{}'); } catch(e) {demo={};}
+queue=Array.isArray(demo.queue)?demo.queue:[];
+var selectedReport='1', detailStates=demo.details||{}, confirmations=demo.confirmations||{};
+function escapeDemo(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function persistDemo(){
+  try{localStorage.setItem('nivel-previa-v3',JSON.stringify({queue:queue,details:detailStates,confirmations:confirmations,offline:offline,big:document.documentElement.classList.contains('big'),hc:document.body.classList.contains('hc')}));return true}
+  catch(e){toast('Armazenamento indisponível. Mantenha esta página aberta para não perder o relato.');return false}
+}
+function currentReport(){return queue.find(function(x){return x.id===selectedReport})}
+function openDetail(id){
+ selectedReport=id;var r=currentReport(),d=detailStates[id];
+ stIdx=d?d.st:(id==='2'?3:r?0:2);reopened=d?d.reopened:false;
+ $('#rateTxt').textContent='';
+ go('detalhe');
+}
+function renderQ(){
+ updQ();
+ $('#queueList').innerHTML=queue.map(function(q){
+ var level=q.l?lvChip(q.l,LV[q.l-1][0]):'<span class="nv-chip nv-chip-accent">Zeladoria</span>';
+ return '<button class="item" type="button" data-detail="'+q.id+'"><span class="chips"><span class="nv-chip '+(q.sent?'nv-chip-ok':'nv-chip-warn')+'">'+(q.sent?'Enviado (demo)':'Salvo no celular · na fila')+'</span> '+level+'</span><b>'+escapeDemo(q.tipo)+'</b><span class="mut">'+escapeDemo(q.local)+' · '+new Date(q.time).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</span><svg class="ic go" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>'
+ }).join('');
+}
+function demoPin(p,i){
+ var b=document.createElement('button');b.type='button';b.className='pin p'+p.l;b.style.left=p.x+'%';b.style.top=p.y+'%';b.textContent=p.l;b.setAttribute('aria-label',p.n+', nível '+p.l+' '+LV[p.l-1][0]);b.setAttribute('aria-pressed','false');
+ b.onclick=function(){
+ $$('.pin').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');
+ var key=p.id||('pin'+i),c=confirmations[key];
+ $('#pinCard').innerHTML='<div class="chips">'+lvChip(p.l,p.l+' '+LV[p.l-1][0])+'</div><b>'+escapeDemo(p.n)+'</b><p class="mut">'+escapeDemo(p.t)+' Informação comunitária demonstrativa.</p><div class="btn-row"><button class="nv-btn nv-btn-primary" type="button" data-c="1">Ainda alagado</button><button class="nv-btn nv-btn-secondary" type="button" data-c="0">Já baixou</button></div><p id="cfTxt" class="mut" role="status">'+(c?(c.pending?'Atualização salva. Aguardando conexão.':'Sua atualização já foi registrada.'):'')+'</p>';
+ $$('[data-c]',$('#pinCard')).forEach(function(btn){btn.onclick=function(){
+ if(confirmations[key]){$('#cfTxt').textContent='Você já atualizou este relato nesta demonstração.';return}
+ confirmations[key]={value:btn.dataset.c,pending:offline};persistDemo();
+ $('#cfTxt').textContent=offline?'Atualização salva no celular. Aguardando conexão.':'Atualização registrada. Não significa liberação da via.'
+ }});
+ };$('#mapBox').appendChild(b);
+}
+function renderPins(){
+ $$('.pin').forEach(function(n){n.remove()});
+ var pins=PINS.concat(queue.filter(function(q){return q.sent&&q.l}).map(function(q,i){return {id:q.id,x:30+(i*13)%45,y:35+(i*17)%40,l:q.l,n:q.local,t:q.tipo+' · '+new Date(q.time).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' (demo).'}}));
+ pins.forEach(demoPin);
+}
+function renderNewAlerts(){
+ var box=$('#newAlerts');if(!box){box=document.createElement('div');box.id='newAlerts';$('#alertas').insertBefore(box,$('#alert1'))}
+ box.innerHTML=queue.filter(function(q){return q.sent&&q.l}).map(function(q){return '<button type="button" class="item" data-new-pin="'+q.id+'"><span class="chips">'+lvChip(q.l,LV[q.l-1][0])+'</span><b>'+escapeDemo(q.local)+'</b><span class="mut">Seu relato · '+new Date(q.time).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' (demo)</span></button>'}).join('');
+ $$('[data-new-pin]').forEach(function(b){b.onclick=function(){var id=b.dataset.newPin;go('mapa');var list=PINS.concat(queue.filter(function(q){return q.sent&&q.l}));var i=list.findIndex(function(p){return p.id===id});if(i>=0)$$('.pin')[i].click()}})
+}
+function refreshDetails(){
+ var r=currentReport(),titles={'1':'Bueiro entupido, Rua Exemplo','2':'Córrego assoreado, Travessa Modelo','3':'Alagamento na rua, Rua Exemplo'};
+ $('#detalhe .nv-card .t').textContent=r?r.tipo+', '+r.local:titles[selectedReport]||titles['1'];
+ var water=(r&&r.l)||selectedReport==='3';
+ $('#tl').classList.toggle('hide',!!water);$('#advance').classList.toggle('hide',!!water||stIdx===3);$('#rate').classList.toggle('hide',!!water||!(stIdx===3&&!reopened));
+ if(water){$('#dStatus').textContent=r&&!r.sent?'Na fila':'Ativo (demo)';$('#dData').textContent='Relato comunitário demonstrativo. Consulte o mapa para atualizações.';}
+ else if(r&&!r.sent){$('#dStatus').textContent='Na fila';$('#dData').textContent='Aguardando conexão simulada.';$('#advance').classList.add('hide');}
+ else $('#dData').textContent+=' · Atendimento simulado, sem envio à prefeitura.';
+}
+
+/* Início por hash: #tela ou #tela?offline|fila|resolvido|bv2|p2|p3|pin|shot  (também com &) */
+renderBV();if(demo.big)big(true);if(demo.hc)hc(true);if(demo.offline)setNet(true);
+renderPins();
+var h=(location.hash||'#boas-vindas').slice(1).split(/[?&]/),scr=h[0]||'boas-vindas',q=h.slice(1).join('&');
+if(q.indexOf('shot')>-1)document.body.classList.add('shot');
+if(q.indexOf('big')>-1)big(true);
+if(q.indexOf('hc')>-1)hc(true);
+if(q.indexOf('offline')>-1)setNet(true);
+if(q.indexOf('fila')>-1){queue=[{id:'fila-demo',tipo:'Alagamento na rua',l:2,sent:false,local:'Rua Exemplo',time:Date.now()}]}
+if(q.indexOf('resolvido')>-1)stIdx=3;
+if(q.indexOf('bv2')>-1){bv=1;renderBV()}
+go(document.getElementById(scr)&&document.getElementById(scr).classList.contains('screen')?scr:'boas-vindas');
+if(scr==='reportar'){if(q.indexOf('p2')>-1){rep.tipo='Alagamento na rua';repStep(2)}if(q.indexOf('p3')>-1){rep.tipo='Alagamento na rua';rep.l=3;$('#rResumo').textContent='Alagamento na rua · água na cintura';repStep(3)}}
+if(scr==='mapa'&&q.indexOf('pin')>-1)$$('.pin')[0].click();
+booted=true;
+/* o navegador rola até o id do hash; volta ao topo */
+function top0(){$('#main').scrollTop=0}
+window.addEventListener('load',top0);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(top0);setTimeout(top0,50);
+window.addEventListener('hashchange',function(){var id=location.hash.slice(1).split(/[?&]/)[0];if(id&&id!==cur&&document.getElementById(id)&&document.getElementById(id).classList.contains('screen'))go(id);else top0()});
+
+/* Interações dos botões já existentes no Perfil. */
+(function(){
+ var btns=$$('#perfil .stack button');
+ if(btns[0])btns[0].onclick=function(){
+ var data=new Blob([JSON.stringify({relatos:queue},null,2)],{type:'application/json'});
+ var a=document.createElement('a'),url=URL.createObjectURL(data);a.href=url;a.download='nivel-meus-dados-demo.json';a.click();setTimeout(function(){URL.revokeObjectURL(url)},1000)
+ };
+ if(btns[1])btns[1].onclick=function(){
+ if(!confirm('Apagar os dados desta demonstração salvos neste navegador?'))return;
+ try{localStorage.removeItem('nivel-previa-v3')}catch(e){}
+ queue=[];detailStates={};confirmations={};offline=false;setNet(false);big(false);hc(false);persistDemo();go('boas-vindas');toast('Dados demonstrativos apagados.')
+ };
+})();
+
+</script>
+</body>
+</html>
